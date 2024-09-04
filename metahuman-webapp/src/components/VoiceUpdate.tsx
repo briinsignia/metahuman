@@ -5,8 +5,9 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import {
-  getMiddlewareResponseAudioText,
-  //getResponseAudioText,
+  getResponseAudioText,
+  getResponseAudio,
+  // postTranscribeAudio,
   silentAI,
 } from "@/api/transcribe-audio/post";
 
@@ -56,7 +57,13 @@ const AutoVoiceDetectionComponent: React.FC = () => {
   const startRecording = async () => {
     setLogMessage("Ready Start Recording"); // Set the log message
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
       mediaRecorderRef.current = new MediaRecorder(stream);
       audioChunks.current = [];
 
@@ -103,7 +110,7 @@ const AutoVoiceDetectionComponent: React.FC = () => {
       if (silenceTimerRef.current) {
         clearTimeout(silenceTimerRef.current);
       }
-      silenceTimerRef.current = setTimeout(handleSilence, 1500);
+      silenceTimerRef.current = setTimeout(handleSilence, 2 * 1000); // 2 seconds
     }
 
     return () => {
@@ -123,9 +130,13 @@ const AutoVoiceDetectionComponent: React.FC = () => {
   const sendAudioToBackend = async (audioBlob: Blob) => {
     try {
       setIsLoading(true);
-      console.log("text", transcript);     
-      const { message } = await getMiddlewareResponseAudioText(transcript)
+      // const formData = new FormData();
+      // formData.append("file", audioBlob, "audio.wav");
+  
+      console.log("text noice", transcript);
+      // console.log("Audio size before sending:", audioBlob.size);
       
+      const { message } = await getResponseAudioText(transcript);
       setResponse(message);
       startRecording();
     } catch (error) {
