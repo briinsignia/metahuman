@@ -15,6 +15,7 @@ cd metahuman-backend
 ### Install required depedencies
 ```bash
 npm install
+npm i --save-dev @types/wav-encoder  
 ```
 
 ### Start the Production Server
