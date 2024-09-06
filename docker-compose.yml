@@ -1,0 +1,12 @@
+version: '3'
+services:
+  backend:
+    build: ./metahuman-backend
+    ports:
+      - "4000:4000"
+  frontend:
+    build: ./metahuman-webapp
+    ports:
+      - "4080:4080"
+    depends_on:
+      - backend

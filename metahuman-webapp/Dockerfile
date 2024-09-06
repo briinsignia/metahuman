@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # Step 6: Specify the port number that needs to be exposed
-EXPOSE 3000
+EXPOSE 4080
 
 # Step 7: Run the Next.js server
 CMD [ "npm", "start" ]
